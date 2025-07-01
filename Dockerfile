@@ -16,11 +16,27 @@ RUN apt-get update && apt-get install -y \
     wget \
     git \
     ca-certificates \
+    autoconf \
+    bison \
+    flex \
+    gcc \
+    g++ \
+    libtool \
+    make \
+    pkg-config \
+    libprotobuf-dev \
+    protobuf-compiler \
+    libnl-3-dev \
+    libnl-route-3-dev \
+    uthash-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install additional dependencies for security and functionality
-RUN apt-get update && apt-get install -y \
-    && rm -rf /var/lib/apt/lists/*
+# Install nsjail for sandboxing
+RUN git clone https://github.com/google/nsjail.git /tmp/nsjail && \
+    cd /tmp/nsjail && \
+    make && \
+    cp nsjail /usr/local/bin/ && \
+    rm -rf /tmp/nsjail
 
 # Create app directory
 WORKDIR /app
