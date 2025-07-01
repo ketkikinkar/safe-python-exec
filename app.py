@@ -179,6 +179,23 @@ except Exception as e:
         except OSError:
             pass
 
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint with service information."""
+    return jsonify({
+        'service': 'Safe Python Script Execution Service',
+        'version': '1.0.0',
+        'endpoints': {
+            '/health': 'GET - Health check',
+            '/execute': 'POST - Execute Python script'
+        },
+        'usage': {
+            'health_check': 'GET /health',
+            'execute_script': 'POST /execute with JSON body: {"script": "def main():\\n    return {\\"result\\": \\"success\\"}"}'
+        },
+        'documentation': 'https://github.com/ketkikinkar/safe-python-exec'
+    })
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""
