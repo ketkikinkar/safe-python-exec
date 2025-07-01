@@ -31,8 +31,8 @@ RUN apt-get update && apt-get install -y \
     uthash-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install nsjail for sandboxing
-RUN git clone https://github.com/google/nsjail.git /tmp/nsjail && \
+# Install nsjail for sandboxing (pinned to version 3.4)
+RUN git clone --depth 1 --branch 3.4 https://github.com/google/nsjail.git /tmp/nsjail && \
     cd /tmp/nsjail && \
     make && \
     cp nsjail /usr/local/bin/ && \
