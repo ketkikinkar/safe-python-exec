@@ -111,11 +111,12 @@ Executes a Python script and returns the result.
 
 ## Security Features
 
-- **nsjail Sandboxing**: Isolates script execution from the host system
-- **Resource Limits**: CPU and memory constraints
-- **Network Isolation**: No network access by default
-- **File System Restrictions**: Limited file system access
-- **Process Isolation**: Prevents access to host processes
+- **nsjail Sandboxing**: ✅ **IMPLEMENTED** - Uses Google's nsjail for robust process isolation
+- **Resource Limits**: CPU (30s), memory (512MB), file size (1MB), process count (50) limits enforced
+- **Network Isolation**: Disabled network namespace for container compatibility  
+- **File System Restrictions**: Read-only access to system directories
+- **Process Isolation**: Proper process sandboxing with nsjail's security features
+- **Container Compatible**: Configured to work in Docker and Cloud Run environments
 
 ## Supported Libraries
 
@@ -138,6 +139,14 @@ The execution environment includes:
 │   (cURL, etc.)  │    │   /execute      │    │   Python Exec   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
+
+### nsjail Implementation Details
+
+- **Sandboxing Tool**: Google's nsjail (v3.4+) compiled from source
+- **Security Configuration**: Resource limits without privileged namespaces for container compatibility
+- **Process Isolation**: Each script execution runs in an isolated process environment
+- **Resource Enforcement**: Hard limits on CPU time, memory usage, file operations, and process count
+- **Container Optimized**: Designed to work in Docker containers and Cloud Run without requiring privileged mode
 
 ## Development
 
