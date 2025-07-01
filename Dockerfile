@@ -20,9 +20,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install nsjail
 RUN cd /tmp && \
-    wget https://github.com/google/nsjail/releases/download/3.0/nsjail_3.0_amd64.deb && \
-    dpkg -i nsjail_3.0_amd64.deb && \
-    rm nsjail_3.0_amd64.deb
+    wget https://github.com/google/nsjail/releases/download/3.3/nsjail_3.3-1_amd64.deb && \
+    dpkg -i nsjail_3.3-1_amd64.deb && \
+    rm nsjail_3.3-1_amd64.deb
 
 # Create app directory
 WORKDIR /app
