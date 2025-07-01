@@ -18,26 +18,9 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install nsjail from source (reliable method)
+# Install additional dependencies for security and functionality
 RUN apt-get update && apt-get install -y \
-    flex \
-    bison \
-    protobuf-compiler \
-    libprotobuf-dev \
-    libnl-route-3-dev \
-    libtool \
-    autoconf \
-    automake \
-    pkg-config \
     && rm -rf /var/lib/apt/lists/*
-
-RUN cd /tmp && \
-    git clone https://github.com/google/nsjail.git && \
-    cd nsjail && \
-    make && \
-    cp nsjail /usr/local/bin/ && \
-    cd / && \
-    rm -rf /tmp/nsjail
 
 # Create app directory
 WORKDIR /app

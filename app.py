@@ -53,7 +53,11 @@ def validate_script(script):
     # Check for dangerous imports/operations
     dangerous_patterns = [
         r'import\s+subprocess',
-        r'import\s+os\s*$',
+        r'from\s+os\s+import',  # Block dangerous os imports
+        r'os\.system',          # Block dangerous os operations
+        r'os\.popen',
+        r'os\.exec',
+        r'os\.spawn',
         r'__import__\s*\(',
         r'eval\s*\(',
         r'exec\s*\(',
