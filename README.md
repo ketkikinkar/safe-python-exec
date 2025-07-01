@@ -151,7 +151,3 @@ curl -X POST http://localhost:8080/execute \
     "script": "import pandas as pd\ndef main():\n    df = pd.DataFrame({\"A\": [1, 2, 3]})\n    return {\"shape\": df.shape[0]}"
   }'
 ```
-
-## License
-
-MIT License 
