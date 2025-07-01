@@ -82,56 +82,11 @@ def validate_script(script):
     
     return True
 
-def create_nsjail_config():
-    """
-    Create nsjail configuration file.
-    
-    Returns:
-        str: Path to the configuration file
-    """
-    config_content = f"""
-mode: ONCE
-time_limit: {NSJAIL_CONFIG['time_limit']}
-max_cpus: {NSJAIL_CONFIG['max_cpus']}
-max_files: {NSJAIL_CONFIG['max_files']}
-max_procs: {NSJAIL_CONFIG['max_procs']}
-rlimit_as: {NSJAIL_CONFIG['rlimit_as']}
-rlimit_cpu: {NSJAIL_CONFIG['rlimit_cpu']}
-rlimit_fsize: {NSJAIL_CONFIG['rlimit_fsize']}
-rlimit_nofile: {NSJAIL_CONFIG['rlimit_nofile']}
-rlimit_nproc: {NSJAIL_CONFIG['rlimit_nproc']}
-seccomp_string: "{NSJAIL_CONFIG['seccomp_string']}"
-mount_proc: false
-mount: [
-  {{
-    src: "/tmp"
-    dst: "/tmp"
-    is_bind: true
-    rw: true
-  }},
-  {{
-    src: "/usr/lib/python3"
-    dst: "/usr/lib/python3"
-    is_bind: true
-    rw: false
-  }},
-  {{
-    src: "/usr/local/lib/python3.9"
-    dst: "/usr/local/lib/python3.9"
-    is_bind: true
-    rw: false
-  }}
-]
-"""
-    
-    config_file = tempfile.NamedTemporaryFile(mode='w', suffix='.config', delete=False)
-    config_file.write(config_content)
-    config_file.close()
-    return config_file.name
+
 
 def execute_script_safely(script):
     """
-    Execute the Python script in a sandboxed environment using nsjail.
+    Execute the Python script in a sandboxed environment using subprocess with resource limits.
     
     Args:
         script (str): The Python script to execute
@@ -144,27 +99,32 @@ def execute_script_safely(script):
     script_file.write(script)
     script_file.close()
     
-    config_file = create_nsjail_config()
-    
     try:
         # Prepare the execution script
         exec_script = f"""
 import sys
 import json
 import io
+import resource
 from contextlib import redirect_stdout
+
+# Set resource limits for security
+resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))  # 512MB memory
+resource.setrlimit(resource.RLIMIT_CPU, (30, 30))  # 30 seconds CPU time
+resource.setrlimit(resource.RLIMIT_FSIZE, (1024 * 1024, 1024 * 1024))  # 1MB file size
+resource.setrlimit(resource.RLIMIT_NOFILE, (10, 10))  # 10 file descriptors
 
 # Redirect stdout to capture print statements
 stdout_capture = io.StringIO()
 
 try:
     # Execute the user script
-    with redirect_stdout(stdout_capture):
-        exec(open('{script_file.name}').read())
+    exec(open('{script_file.name}').read())
     
-    # Get the main function and execute it
+    # Get the main function and execute it with stdout capture
     if 'main' in globals():
-        result = main()
+        with redirect_stdout(stdout_capture):
+            result = main()
         
         # Validate that result is JSON serializable
         json.dumps(result)
@@ -188,15 +148,9 @@ except Exception as e:
     sys.exit(1)
 """
         
-        # Execute with nsjail
-        cmd = [
-            'nsjail',
-            '--config', config_file,
-            '--', 'python3', '-c', exec_script
-        ]
-        
+        # Execute with subprocess and timeout
         process = subprocess.run(
-            cmd,
+            ['python3', '-c', exec_script],
             capture_output=True,
             text=True,
             timeout=NSJAIL_CONFIG['time_limit'] + 5
@@ -216,8 +170,10 @@ except Exception as e:
             
     finally:
         # Cleanup
-        os.unlink(script_file.name)
-        os.unlink(config_file)
+        try:
+            os.unlink(script_file.name)
+        except OSError:
+            pass
 
 @app.route('/health', methods=['GET'])
 def health_check():

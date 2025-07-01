@@ -1,5 +1,5 @@
-# Use Ubuntu 20.04 as base image
-FROM ubuntu:20.04
+# Use Ubuntu 22.04 as base image for better compiler support
+FROM ubuntu:22.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -18,11 +18,26 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install nsjail
+# Install nsjail from source (reliable method)
+RUN apt-get update && apt-get install -y \
+    flex \
+    bison \
+    protobuf-compiler \
+    libprotobuf-dev \
+    libnl-route-3-dev \
+    libtool \
+    autoconf \
+    automake \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN cd /tmp && \
-    wget https://github.com/google/nsjail/releases/download/3.3/nsjail_3.3-1_amd64.deb && \
-    dpkg -i nsjail_3.3-1_amd64.deb && \
-    rm nsjail_3.3-1_amd64.deb
+    git clone https://github.com/google/nsjail.git && \
+    cd nsjail && \
+    make && \
+    cp nsjail /usr/local/bin/ && \
+    cd / && \
+    rm -rf /tmp/nsjail
 
 # Create app directory
 WORKDIR /app
