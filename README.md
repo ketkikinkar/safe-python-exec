@@ -12,6 +12,26 @@ A secure API service that allows users to execute Python scripts in a sandboxed 
 
 ## Quick Start
 
+### 🚀 Live Cloud Run Service
+
+**Service URL**: `https://safe-python-exec-16734073749.europe-west1.run.app`
+
+**Test the live service now:**
+```bash
+# Health check
+curl https://safe-python-exec-16734073749.europe-west1.run.app/health
+
+# Execute a Python script
+curl -X POST https://safe-python-exec-16734073749.europe-west1.run.app/execute \
+  -H "Content-Type: application/json" \
+  -d '{
+    "script": "import pandas as pd\nimport numpy as np\ndef main():\n    df = pd.DataFrame({\"numbers\": [1, 2, 3, 4, 5]})\n    return {\"sum\": int(df[\"numbers\"].sum()), \"mean\": float(df[\"numbers\"].mean())}"
+  }'
+
+# Run comprehensive test suite
+./test_service.sh https://safe-python-exec-16734073749.europe-west1.run.app
+```
+
 ### Local Development
 
 1. Build the Docker image:
@@ -52,7 +72,7 @@ gcloud run deploy python-executor \
 
 3. Test with the deployed URL:
 ```bash
-curl -X POST https://YOUR_SERVICE_URL/execute \
+curl -X POST https://safe-python-exec-16734073749.europe-west1.run.app/execute \
   -H "Content-Type: application/json" \
   -d '{
     "script": "import json\ndef main():\n    return {\"message\": \"Hello from Cloud Run!\", \"status\": \"success\"}"
