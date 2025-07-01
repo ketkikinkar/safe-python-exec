@@ -111,7 +111,7 @@ Executes a Python script and returns the result.
 
 ## Security Features
 
-- **nsjail Sandboxing**: ✅ **IMPLEMENTED** - Uses Google's nsjail for robust process isolation
+- **nsjail Sandboxing**: **IMPLEMENTED** - Uses Google's nsjail for robust process isolation
 - **Resource Limits**: CPU (30s), memory (512MB), file size (1MB), process count (50) limits enforced
 - **Network Isolation**: Disabled network namespace for container compatibility  
 - **File System Restrictions**: Read-only access to system directories
