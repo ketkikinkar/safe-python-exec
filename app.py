@@ -16,7 +16,7 @@ from werkzeug.exceptions import BadRequest
 
 app = Flask(__name__)
 
-# nsjail configuration (simplest working configuration)
+# nsjail configuration (disable ALL namespaces for container compatibility)
 NSJAIL_CONFIG = [
     '/usr/local/bin/nsjail',
     '--mode', 'o',  # Once mode - run once and exit
@@ -26,8 +26,13 @@ NSJAIL_CONFIG = [
     '--rlimit_fsize', '1',  # 1MB file size limit
     '--rlimit_nofile', '30',  # 30 file descriptors
     '--rlimit_nproc', '50',  # 50 processes (needed for numpy/pandas)
-    '--disable_clone_newnet',    # Disable network namespace (least privileged)
-    '--disable_clone_newuser',   # Disable user namespace (least privileged)
+    '--disable_clone_newnet',    # Disable network namespace
+    '--disable_clone_newuser',   # Disable user namespace
+    '--disable_clone_newns',     # Disable mount namespace
+    '--disable_clone_newpid',    # Disable PID namespace
+    '--disable_clone_newipc',    # Disable IPC namespace
+    '--disable_clone_newuts',    # Disable UTS namespace
+    '--disable_clone_newcgroup', # Disable cgroup namespace
     '--quiet',  # Reduce verbosity
     '--',  # End of nsjail options
     '/usr/bin/python3',
