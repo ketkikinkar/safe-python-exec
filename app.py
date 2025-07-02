@@ -33,6 +33,16 @@ NSJAIL_CONFIG = [
     '--disable_clone_newipc',    # Disable IPC namespace
     '--disable_clone_newuts',    # Disable UTS namespace
     '--disable_clone_newcgroup', # Disable cgroup namespace
+    # Pass essential environment variables for Python libraries
+    '--env', 'PYTHONPATH=/usr/local/lib/python3.11/site-packages:/usr/lib/python3/dist-packages',
+    '--env', 'PATH=/usr/local/bin:/usr/bin:/bin',
+    '--env', 'HOME=/tmp',
+    '--env', 'LANG=C.UTF-8',
+    '--env', 'LC_ALL=C.UTF-8',
+    '--env', 'OPENBLAS_NUM_THREADS=1',  # Limit OpenBLAS threads for container compatibility
+    '--env', 'OMP_NUM_THREADS=1',       # Limit OpenMP threads
+    '--env', 'NUMBA_DISABLE_JIT=1',     # Disable numba JIT compilation
+    '--env', 'MPLBACKEND=Agg',          # Non-interactive matplotlib backend
     '--quiet',  # Reduce verbosity
     '--',  # End of nsjail options
     '/usr/bin/python3',
