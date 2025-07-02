@@ -43,6 +43,10 @@ NSJAIL_CONFIG = [
     '--env', 'OMP_NUM_THREADS=1',       # Limit OpenMP threads
     '--env', 'NUMBA_DISABLE_JIT=1',     # Disable numba JIT compilation
     '--env', 'MPLBACKEND=Agg',          # Non-interactive matplotlib backend
+    '--env', 'PYTHONDONTWRITEBYTECODE=1',  # Don't create .pyc files
+    '--env', 'PYTHONIOENCODING=utf-8',     # Set Python IO encoding
+    '--env', 'TZ=UTC',                     # Set timezone
+    '--env', 'TMPDIR=/tmp',                # Temp directory
     '--quiet',  # Reduce verbosity
     '--',  # End of nsjail options
     '/usr/bin/python3',

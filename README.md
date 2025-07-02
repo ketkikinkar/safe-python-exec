@@ -120,15 +120,38 @@ Executes a Python script and returns the result.
 
 ## Supported Libraries
 
-The execution environment includes:
-- Standard Python libraries
-- `os` (with restrictions)
-- `pandas`
-- `numpy`
-- `json`
+The execution environment includes a comprehensive set of pre-installed libraries:
+
+### Scientific Computing & Data Analysis
+- `pandas` - Data manipulation and analysis
+- `numpy` - Numerical computing
+- `scipy` - Scientific computing algorithms
+- `matplotlib` - Plotting and visualization
+- `seaborn` - Statistical data visualization
+
+### Data Processing & I/O
+- `openpyxl` - Excel file reading/writing
+- `xlsxwriter` - Excel file creation
+- `python-dateutil` - Advanced date parsing
+- `pytz` - Timezone handling
+
+### Web & Network
+- `requests` - HTTP library
+- `urllib3` - HTTP client
+- `beautifulsoup4` - HTML/XML parsing
+- `lxml` - XML/HTML parser
+
+### Data Validation & Serialization
+- `jsonschema` - JSON schema validation
+- `json` - JSON handling (built-in)
+
+### Standard Libraries (with restrictions)
+- `os` (limited operations)
 - `math`
 - `datetime`
 - `collections`
+- `io`
+- `sys` (limited)
 
 ## Architecture
 
@@ -179,4 +202,10 @@ curl -X POST http://localhost:8080/execute \
   -d '{
     "script": "import pandas as pd\ndef main():\n    df = pd.DataFrame({\"A\": [1, 2, 3]})\n    return {\"shape\": df.shape[0]}"
   }'
+
+# Run comprehensive library test
+python3 test_libraries.py http://localhost:8080
+
+# Test all functionality with existing test suite
+./test_service.sh http://localhost:8080
 ```
