@@ -16,16 +16,15 @@ from werkzeug.exceptions import BadRequest
 
 app = Flask(__name__)
 
-# nsjail configuration (disable ALL namespaces for container compatibility)
+# nsjail configuration (Cloud Run compatible - minimal privileged operations)
 NSJAIL_CONFIG = [
     '/usr/local/bin/nsjail',
     '--mode', 'o',  # Once mode - run once and exit
     '--time_limit', '30',  # 30 seconds timeout
-    '--rlimit_as', '512',  # 512MB memory limit  
-    '--rlimit_cpu', '30',  # 30 seconds CPU time
-    '--rlimit_fsize', '1',  # 1MB file size limit
-    '--rlimit_nofile', '30',  # 30 file descriptors
-    '--rlimit_nproc', '50',  # 50 processes (needed for numpy/pandas)
+    '--log', '/tmp/nsjail.log',  # Log to temp directory
+    '--disable_proc',  # Disable /proc access
+    # Remove ALL rlimit options - they require elevated privileges in Cloud Run
+    # Cloud Run container limits will handle resource constraints instead
     '--disable_clone_newnet',    # Disable network namespace
     '--disable_clone_newuser',   # Disable user namespace
     '--disable_clone_newns',     # Disable mount namespace
