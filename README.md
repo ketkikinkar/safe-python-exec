@@ -12,7 +12,7 @@ A secure API service that allows users to execute Python scripts in a sandboxed 
 
 ## Quick Start
 
-### 🚀 Live Cloud Run Service
+### Live Cloud Run Service
 
 **Service URL**: `https://safe-python-exec-16734073749.europe-west1.run.app`
 
